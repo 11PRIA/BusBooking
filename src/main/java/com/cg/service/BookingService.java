@@ -1,5 +1,14 @@
 package com.cg.service;
 
-public class BookingService {
+import java.time.LocalDate;
+import java.util.List;
 
+import com.cg.entity.*;
+
+public interface BookingService {
+
+    Customer login(String email, String password);
+
+    List<Schedule> searchSchedule(String source, String destination, LocalDate date);
+    
 }
