@@ -35,4 +35,47 @@ public class BookingServiceImpl implements BookingService {
     public List<Schedule> searchSchedule(String source, String destination, LocalDate date) {
         return scheduleRepo.findByRoute_SourceAndRoute_DestinationAndTravelDate(source, destination, date);
     }
+
+    @Override
+    public Booking bookSeats(int customerId, int scheduleId, List<Passenger> passengers) {
+
+        Customer customer = customerRepo.findById(customerId).orElseThrow();
+        Schedule schedule = scheduleRepo.findById(scheduleId).orElseThrow();
+
+        if (schedule.getAvailableSeats() < passengers.size()) {
+            throw new RuntimeException("Seats not available");
+        }
+
+        Booking booking = new Booking();
+        booking.setCustomer(customer);
+        booking.setSchedule(schedule);
+        booking.setBookingDate(LocalDateTime.now());
+        booking.setTotalAmount(passengers.size() * schedule.getPrice());
+
+        // Set booking reference in passengers
+        for (Passenger p : passengers) {
+            p.setBooking(booking);
+        }
+
+        booking.setPassengers(passengers);
+
+        // Save booking (cascade saves passengers)
+        Booking savedBooking = bookingRepo.save(booking);
+
+        // Update seats
+        schedule.setAvailableSeats(schedule.getAvailableSeats() - passengers.size());
+        scheduleRepo.save(schedule);
+
+        return savedBooking;
+    }
+
+    @Override
+    public List<Booking> getBookingsByCustomer(int customerId) {
+        return bookingRepo.findByCustomer_CustomerId(customerId);
+    }
+
+    @Override
+    public List<Passenger> getPassengersByBooking(int bookingId) {
+        return passengerRepo.findByBooking_BookingId(bookingId);
+    }
 }
