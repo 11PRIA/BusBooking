@@ -20,11 +20,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         return http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()   // 🔥 allow everything
-            )
-            .build();
+                // ✅ ENABLE CORS (VERY IMPORTANT)
+                .cors(cors -> {})
+
+                // ✅ DISABLE CSRF
+                .csrf(csrf -> csrf.disable())
+
+                // ✅ STATELESS (JWT)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // ✅ PERMIT ALL (for now)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().permitAll()
+                )
+
+                // ✅ ADD JWT FILTER
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .build();
     }
 }

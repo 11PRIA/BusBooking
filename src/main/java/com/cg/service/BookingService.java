@@ -16,4 +16,8 @@ public interface BookingService {
     List<Booking> getBookingsByCustomer(int customerId);
 
     List<Passenger> getPassengersByBooking(int bookingId);
+    
+    Schedule getScheduleById(int id);
+    
+    List<Integer> getBookedSeats(int scheduleId);
 }

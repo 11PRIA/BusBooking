@@ -10,7 +10,18 @@ public class Passenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int passengerId;
 
-    @ManyToOne
+
+    @Column(name = "seat_number")
+    private Integer seatNumber; 
+    
+    public Integer getSeatNumber() {
+		return seatNumber;
+	}
+	public void setSeatNumber(Integer seatNumber) {
+		this.seatNumber = seatNumber;
+	}
+
+	@ManyToOne
     @JoinColumn(name = "booking_id")
     @JsonBackReference
     private Booking booking;

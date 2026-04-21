@@ -9,6 +9,7 @@ public class BusBookingProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BusBookingProjectApplication.class, args);
+		
 	}
 
 }

@@ -25,11 +25,13 @@ public class BookingController {
             @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
             LocalDate date) {
 
-        System.out.println("SOURCE: " + source);
-        System.out.println("DEST: " + destination);
-        System.out.println("DATE: " + date);
-
         return service.searchSchedule(source, destination, date);
+    }
+
+    // ⭐ NEW API (IMPORTANT)
+    @GetMapping("/schedule/{id}")
+    public Schedule getScheduleById(@PathVariable int id) {
+        return service.getScheduleById(id);
     }
 
     @PostMapping("/booking")
@@ -49,5 +51,10 @@ public class BookingController {
     @GetMapping("/passengers/{bookingId}")
     public List<Passenger> getPassengers(@PathVariable int bookingId) {
         return service.getPassengersByBooking(bookingId);
+    }
+
+    @GetMapping("/booked-seats/{scheduleId}")
+    public List<Integer> getBookedSeats(@PathVariable int scheduleId) {
+        return service.getBookedSeats(scheduleId);
     }
 }

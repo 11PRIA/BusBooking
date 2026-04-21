@@ -10,7 +10,7 @@ import com.cg.security.AuthRequest;
 import com.cg.security.JwtService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 

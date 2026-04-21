@@ -37,6 +37,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public List<Integer> getBookedSeats(int scheduleId) {
+        return passengerRepo.findBookedSeatsByScheduleId(scheduleId);
+    }
+
+    @Override
     public Booking bookSeats(int customerId, int scheduleId, List<Passenger> passengers) {
 
         Customer customer = customerRepo.findById(customerId).orElseThrow();
@@ -46,27 +51,46 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Seats not available");
         }
 
+        // 🔥 get already booked seats
+        List<Integer> bookedSeats = passengerRepo.findBookedSeatsByScheduleId(scheduleId);
+
+        // 🔥 validation
+        for (Passenger p : passengers) {
+
+            if (p.getSeatNumber() == null) {
+                throw new RuntimeException("Seat number missing");
+            }
+
+            if (bookedSeats.contains(p.getSeatNumber())) {
+                throw new RuntimeException("Seat " + p.getSeatNumber() + " already booked");
+            }
+        }
+
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setSchedule(schedule);
         booking.setBookingDate(LocalDateTime.now());
         booking.setTotalAmount(passengers.size() * schedule.getPrice());
 
-        // Set booking reference in passengers
         for (Passenger p : passengers) {
             p.setBooking(booking);
         }
 
         booking.setPassengers(passengers);
 
-        // Save booking (cascade saves passengers)
         Booking savedBooking = bookingRepo.save(booking);
 
-        // Update seats
+        // update available seats
         schedule.setAvailableSeats(schedule.getAvailableSeats() - passengers.size());
         scheduleRepo.save(schedule);
 
         return savedBooking;
+    }
+    
+    
+    @Override
+    public Schedule getScheduleById(int id) {
+        return scheduleRepo.findById(id).orElseThrow();
     }
 
     @Override

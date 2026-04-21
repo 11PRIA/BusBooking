@@ -15,6 +15,9 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
+    
+    @Column(name = "total_seats")
+    private int totalSeats;
 
     private LocalDate travelDate;
     private int availableSeats;
@@ -34,7 +37,13 @@ public class Schedule {
     public LocalDate getTravelDate() { return travelDate; }
     public void setTravelDate(LocalDate travelDate) { this.travelDate = travelDate; }
 
-    public int getAvailableSeats() { return availableSeats; }
+    public int getTotalSeats() {
+		return totalSeats;
+	}
+	public void setTotalSeats(int totalSeats) {
+		this.totalSeats = totalSeats;
+	}
+	public int getAvailableSeats() { return availableSeats; }
     public void setAvailableSeats(int availableSeats) { this.availableSeats = availableSeats; }
 
     public double getPrice() { return price; }
